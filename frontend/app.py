@@ -7,6 +7,15 @@ from furl import furl
 def get_recommendation_movies(movieId):
     req = requests.get('http://127.0.0.1:8000/get_recommendation/' + movieId)
     json_data = req.json()
+    print(json_data)
+    dataframe = pd.DataFrame(json_data)
+    return generate_table(dataframe)
+
+
+def get_user_recommendation(userId):
+    req = requests.get('http://127.0.0.1:8000/user_recommendation/' + userId)
+    json_data = req.json()
+    print(json_data)
     dataframe = pd.DataFrame(json_data)
     return generate_table(dataframe)
 
@@ -29,6 +38,8 @@ def make_layout():
         dash.dcc.Location(id="url", refresh=False),
         html.H4(children='Movie recommendation'),
         html.Div(id='content'),
+        html.H4(children='SVD recommendation'),
+        html.Div(id='content2'),
     ])
 
 
@@ -43,6 +54,15 @@ def _content(href: str):
     movieId = f.args['movieId']
 
     return get_recommendation_movies(movieId)
+
+
+@app.callback(Output('content2', 'children'),
+              [Input('url', 'href')])
+def _content2(href: str):
+    f = furl(href)
+    userId = f.args['userId']
+
+    return get_user_recommendation(userId)
 
 
 if __name__ == '__main__':

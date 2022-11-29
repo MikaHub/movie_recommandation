@@ -13,7 +13,7 @@ from scipy.sparse.linalg import svds
 # In[7]:
 
 
-ratings = pd.read_csv('./input/ratings_small.csv')
+ratings = pd.read_csv('/Users/micaeldossantos/WorkSpace/IA/movie_recommandation_system/data/ratings_small.csv')
 ratings.head()
 
 
@@ -141,7 +141,10 @@ def get_high_recommended_movies(userId):
     movies_high_rated_by_user =  movies_rated_by_user[movies_rated_by_user > 3].index
     movies_recommended_for_user = preds_df.loc[userId]
     movies_high_recommend_for_user = movies_recommended_for_user[movies_recommended_for_user > 3].index
-    return set(movies_high_recommend_for_user) - set(movies_high_rated_by_user)
+    res = dict()
+    res["movieId"] = set(movies_high_recommend_for_user) - set(movies_high_rated_by_user)
+    res["rating"] = preds_df.loc[userId, set(movies_high_recommend_for_user) - set(movies_high_rated_by_user)]
+    return res
 
 
 # In[56]:
